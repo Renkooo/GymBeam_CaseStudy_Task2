@@ -1,0 +1,41 @@
+name: Run Pipeline
+
+on:
+  schedule:
+    - cron: "0 5 * * *"   # 07:00 v lete
+    # - cron: "0 6 * * *"   # 07:00 v zime
+  workflow_dispatch:
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - run: pip install -r requirements.txt
+
+      - name: Run extractor
+        env:
+          GOLEMIO_API_KEY: ${{ secrets.GOLEMIO_API_KEY }}
+        run: |
+          mkdir -p out
+          python extrakcia_dat.py -o out/municipal_libraries
+
+      - name: Set artifact name (Prague date)
+        id: meta
+        run: echo "artifact_name=municipal-libraries-$(TZ=Europe/Prague date +%Y%m%d)" >> $GITHUB_OUTPUT
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.meta.outputs.artifact_name }}
+          path: |
+            out/municipal_libraries.csv
+            out/municipal_libraries.jsonl
+          if-no-files-found: error
+          retention-days: 30
