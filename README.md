@@ -16,3 +16,10 @@
     ```bash
     python extrakcia_dat.py -o vystup_kniznice
     ```
+
+
+### Dodatocne informacie
+
+Na GitHube je nakonfigurovany workflow (teda pipeline), ktora nahodi ubuntu snapshot s pripravenym python prostredim. Nasledne si doinstaluje potrebne kniznice definovane v subore `requirements.txt`.
+
+Tento proces sa pusta denne o 07:00 a jeho vysledkom je artifact, ktory obsahuje dva vystupne subory (CSV a JSONL) s extrahovanymi datami. Tento artifact je dostupny na GitHube v sekcii Actions pod poslednym behom workflow.
